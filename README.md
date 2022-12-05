@@ -1,32 +1,16 @@
-# Deploy django project
-### using NGINX and Gunicorn
-<hr>
+# Deploy django project using NGINX and Gunicorn
 
 ## <ins>Table of Content:<ins>
-1. [Requirements](#Requirements:)
-2. [Install NGINX](#Install-NGINX:)
-3. [Prepare environment](#Prepare-environment:)
-4. [Prepare project files](#Prepare-project-files:)
-5. [Prepare Gunicorn server](#Prepare-Gunicorn-server:)
+1. [Install NGINX](#Install-NGINX:)
+2. [Prepare environment](#Prepare-environment:)
+3. [Prepare project files](#Prepare-project-files:)
+4. [Prepare Gunicorn server](#Prepare-Gunicorn-server:)
+5. [Prepare NGINX](#Prepare-NGINX:)
 <hr>
 
 ## Requirements:
 1. NGINX
 2. Gunicorn
-<hr>
-
-## Install NGINX:
-
-```shell
-# update system
-sudo apt update
-
-# install nginx
-sudo apt install nginx
-
-# check if nginx installed successfully 
-sudo systemctl restart nginx.service
-```
 <hr>
 
 ## Prepare environment:
@@ -54,7 +38,7 @@ sudo systemctl restart nginx.service
 <hr>
 
 ## Prepare project files:
-1. Upload project to the folder that you just created **project_name**
+1. Upload project to the folder that you just created **"project_name"**
 2. Upload static folder to **project_name**
     ``` 
     .
@@ -81,7 +65,6 @@ sudo systemctl restart nginx.service
    ```
 <hr>
 
-
 ## Prepare Gunicorn server:
 1. Install **Gunicorn**:
     ```shell
@@ -95,10 +78,10 @@ sudo systemctl restart nginx.service
 3. Paste this configuration into conf/gunicorn.conf
     ```
     command = '/path_to_project/project_venv/bin/gunicorn'
-    #examble: '/home/azureuser/oca/venv/bin/gunicorn'
+    #example: '/home/azureuser/oca/venv/bin/gunicorn'
    
     pythonpath = '/path_to_project'
-    #examble: /home/azureuser/oca'
+    #example: /home/azureuser/oca'
    
     bind = '127.0.0.1:8000' 
     workers = 3
@@ -140,3 +123,47 @@ sudo systemctl restart nginx.service
             └── ...
    ```
 <hr>
+
+## Prepare NGINX:
+1. Install NGINX:
+    ```shell
+    # update system
+    sudo apt update
+    
+    # install nginx
+    sudo apt install nginx
+    
+    # check if nginx installed successfully 
+    sudo systemctl status nginx.service # you should see active (running)
+    ```
+2. Create NGINX config file:
+    ```shell
+    sudo -i
+    cd /etc/nginx/sites-available
+    touch "project_name"
+    ```
+    > Paste this configuration into "**project_name**"
+    ```
+        server {
+            server_name server_ip_or_domain;
+
+            location /static/ {
+                alias path_to_static_dir;
+                # example: /home/user/project_name/static/
+            }
+
+            location / {
+                proxy_pass http://127.0.0.1:8000; # bind from gunicorn conf
+            }
+        }
+    ```
+3. Activate this project:
+    ```shell
+    cd /etc/nginx/sites-enabled
+    ln -s /etc/nginx/sites-available/project_name /etc/nginx/sites-enabled/project_name
+    ```
+   
+4. Restart NGINX:
+    ```shell
+    systemctl restart nginx.service 
+    ```
