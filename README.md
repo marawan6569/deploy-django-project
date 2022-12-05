@@ -1,11 +1,10 @@
 # Deploy django project using NGINX and Gunicorn
 
 ## <ins>Table of Content:<ins>
-1. [Install NGINX](#Install-NGINX:)
-2. [Prepare environment](#Prepare-environment:)
-3. [Prepare project files](#Prepare-project-files:)
-4. [Prepare Gunicorn server](#Prepare-Gunicorn-server:)
-5. [Prepare NGINX](#Prepare-NGINX:)
+1. [Prepare environment](#Prepare-environment:)
+2. [Prepare project files](#Prepare-project-files:)
+3. [Prepare Gunicorn server](#Prepare-Gunicorn-server:)
+4. [Prepare NGINX](#Prepare-NGINX:)
 <hr>
 
 ## Requirements:
